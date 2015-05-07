@@ -1,4 +1,4 @@
-EXE  := mandelbrot
+EXE  := app
 
 all: $(EXE)
 

@@ -13,4 +13,5 @@ $(PRES).html: $(PRES)
 	pandoc -s -i -t SLIDY $< -o $@ --filter pandoc-citeproc
 
 clean:
-	rm $(EXE)
+	rm -f $(EXE)
+	rm -f $(PRES).html

@@ -1,3 +1,7 @@
 mandelbrot
 app
 *.html
+
+# Don't put images in repo
+*.jpg
+img/*

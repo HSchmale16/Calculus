@@ -3,14 +3,26 @@
 #include <cstdlib>
 #include <SDL/SDL.h>
 #include <pthread.h>
+#include <gflags/gflags.h>
+
+#define MAND_DX (MAND_XMAX - MAND_XMIN)
+#define MAND_DY (MAND_YMAX - MAND_YMIN)
+
+const double MAND_XMIN = -2.5;
+const double MAND_XMAX = 1.0;
+const double MAND_YMIN = -1.0;
+const double MAND_YMAX = 1.0;
 
 const int THREADS  = 4;
-const int SCR_WDTH = 800;
-const int SCR_HGHT = 600;
+const int SCR_WDTH = MAND_DX * 300;
+const int SCR_HGHT = MAND_DY * 300;
 const int SCR_CD   = 32;
 const int ITERATS  = 1000;
 const int MAX_ITER = 512;  //!< Maximum number of iter for mandelbrot
 const int FRAMES   = 100; //!< Frames to render before quiting
+
+DEFINE_double(xcenter, MAND_DX / 2.0, "The x-axis point to zoom in on");
+DEFINE_double(ycenter, MAND_DY / 2.0, "The y-axis point to zoom in on");
 
 /** Maps a value between 2 limits to some other value between 2 other
  * limits
@@ -33,14 +45,6 @@ struct pixel{
         b     = 0;
         alpha = 255;
     }
-
-    template<typename TYP>
-        pixel(TYP red, TYP gre, TYP blu, TYP alp){
-            r     = red % 255;
-            g     = gre % 255;
-            b     = blu % 255;
-            alpha = alp % 255;
-        }
 };
 
 pixel colorTable[MAX_ITER];
@@ -97,11 +101,33 @@ void* renderThread(void *data){
     pthread_exit(NULL);
 }
 
-int main(){
+void setScale(rendThrData* d){
+// define local macros for calculating delta
+#define dx (xmax-xmin)
+#define dy (ymax-ymin)
+    static double xmin = MAND_XMIN;
+    static double xmax = MAND_XMAX;
+    static double ymin = MAND_YMIN;
+    static double ymax = MAND_YMAX;
+    double xsca = (dx*1E-10)/2.0;
+    double ysca = (dy*1E-10)/2.0;
+    xmin += xsca;
+    xmax -= xsca;
+    ymin += ysca;
+    ymax -= ysca;
+
+// Undefine local macros
+#undef dx
+#undef dy
+}
+
+int main(int argc, char*argv[]){
     pthread_t    thrds[THREADS];
     rendThrData* data;
     SDL_Surface* screen;
     int i,rc;
+
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     SDL_Init(SDL_INIT_EVERYTHING); 
     generateColorTable();
@@ -117,6 +143,7 @@ int main(){
     for(i = 0; i < FRAMES; i++){
         pthread_join(thrds[i % THREADS], NULL); // Join current thread
         SDL_LockSurface(screen);
+        // Draw to the screen
         for(int x = 0; x < SCR_WDTH; x++){
             for(int y = 0; y < SCR_HGHT; y++){
                 put_px(screen, x, y, &colorTable[data[i%THREADS].img[x][y]]);

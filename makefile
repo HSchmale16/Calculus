@@ -1,7 +1,16 @@
 EXE  := app
+PRES := pres.md
 
-all: $(EXE)
+all: $(EXE) $(PRES).html
 
 $(EXE): mandelbrot.cpp
+	$(info Making $(EXE))
 	g++ -std=c++11 -O2 -lpthread -lSDL -lm -o $@ $^
 	strip -s $@
+
+$(PRES).html: $(PRES)
+	$(info Making Presentation)
+	pandoc -s -i -t SLIDY $< -o $@ --filter pandoc-citeproc
+
+clean:
+	rm $(EXE)

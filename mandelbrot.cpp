@@ -17,9 +17,9 @@ const int THREADS  = 4;
 const int SCR_WDTH = MAND_DX * 300;
 const int SCR_HGHT = MAND_DY * 300;
 const int SCR_CD   = 32;
-const int ITERATS  = 1000;
-const int MAX_ITER = 512;  //!< Maximum number of iter for mandelbrot
-const int FRAMES   = 100; //!< Frames to render before quiting
+const int ITERATS  = 15000;
+const int MAX_ITER = 1024; //!< Maximum number of iter for mandelbrot
+const int FRAMES   = 100;  //!< Frames to render before quiting
 
 DEFINE_double(xcenter, MAND_DX / 2.0, "The x-axis point to zoom in on");
 DEFINE_double(ycenter, MAND_DY / 2.0, "The y-axis point to zoom in on");
@@ -84,8 +84,8 @@ void* renderThread(void *data){
     int py, px, itr;
     for(py = 0; py < SCR_HGHT; py++){
         for(px = 0; px < SCR_WDTH; px++){
-            x0 = map(px, 0, SCR_WDTH, -2.5, 1.0);
-            y0 = map(py, 0, SCR_HGHT, -1.0, 1.0);
+            x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
+            y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             x = 0.0;
             y = 0.0;
             itr = 0;
@@ -102,23 +102,26 @@ void* renderThread(void *data){
 }
 
 void setScale(rendThrData* d){
-// define local macros for calculating delta
-#define dx (xmax-xmin)
-#define dy (ymax-ymin)
+    // define local macros for calculating delta
+    #define dx (xmax-xmin)
+    #define dy (ymax-ymin)
     static double xmin = MAND_XMIN;
     static double xmax = MAND_XMAX;
     static double ymin = MAND_YMIN;
     static double ymax = MAND_YMAX;
-    double xsca = (dx*1E-10)/2.0;
-    double ysca = (dy*1E-10)/2.0;
+    double xsca = (dx*.05)/2.0;
+    double ysca = (dy*.05)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
     ymax -= ysca;
-
-// Undefine local macros
-#undef dx
-#undef dy
+    d->xmin = xmin;
+    d->xmax = xmax;
+    d->ymin = ymin;
+    d->ymax = ymax;
+    // Undefine local macros
+    #undef dx
+    #undef dy
 }
 
 int main(int argc, char*argv[]){
@@ -154,7 +157,8 @@ int main(int argc, char*argv[]){
             fprintf(stderr, "SDL_Flip Failed");
             return 1;
         }
-        // Recreate the thread 
+        // Recreate the thread
+        setScale(&data[i%THREADS]); 
         rc = pthread_create(&thrds[i % THREADS], NULL, renderThread, 
                 (void*)&data[i % THREADS]);
         if(rc){

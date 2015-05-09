@@ -5,8 +5,8 @@ all: $(EXE) $(PRES).html
 
 $(EXE): mandelbrot.cpp
 	$(info Making $(EXE))
-	g++ -g -Wall -std=c++11 -O2 -lpthread -lSDL -lm -lgflags -o $@ $^
-	# strip -s $@
+	g++ -g -O2 -std=c++11 -lpthread -lSDL -lm -lgflags -o $@ $^
+	strip -s $@
 
 $(PRES).html: $(PRES)
 	$(info Making Presentation)

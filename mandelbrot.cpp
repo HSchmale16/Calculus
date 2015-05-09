@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdint>
+#include <cassert>
 #include <cstdlib>
 #include <SDL/SDL.h>
 #include <pthread.h>
@@ -20,8 +21,8 @@ const int ITERATS  = 15000;
 const int MAX_ITER = 1024; //!< Maximum number of iter for mandelbrot
 const int FRAMES   = 100;  //!< Frames to render before quiting
 
-int32_t   SCR_WDTH = 0;    //!< Screen Width
-int32_t   SCR_HGHT = 0;    //!< Screen Height
+int64_t   SCR_WDTH = 0;    //!< Screen Width
+int64_t   SCR_HGHT = 0;    //!< Screen Height
 
 struct pixel{
     Uint8 r;
@@ -53,8 +54,9 @@ struct rendThrData{
         delete[] img;
     }
 
-    uint64_t& operator()(const uint64_t x, const uint64_t y){
-        return this->img[x * SCR_WDTH + y];
+    uint64_t& operator()(int64_t x, int64_t y){
+        assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
+        return this->img[x * SCR_HGHT + y];
     }
 };
 uint32_t rendThrData::next_id = 0;
@@ -101,7 +103,7 @@ void* renderThread(void *data){
                 x = xtmp;
                 itr++;
             }
-            (*d)(px, py) = itr;
+            (*d)(px, py) = itr;// access img array of thread data via overload
         }
     }
     pthread_exit(NULL);
@@ -159,6 +161,8 @@ int main(int argc, char*argv[]){
         // Draw to the screen
         for(int x = 0; x < SCR_WDTH; x++){
             for(int y = 0; y < SCR_HGHT; y++){
+                // update pixel on screen for the data gotten from the
+                // thread workload
                 put_px(screen, x, y, &colorTable[data[i%THREADS](x, y)]);
             }
         }

@@ -10,16 +10,17 @@ DEFINE_double(xmin, -2.5, "The minimum point on the x-axis");
 DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
 DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
 DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
+DEFINE_double(orgX, -.75, "x-axis center point of the image");
+DEFINE_double(orgY, 0, "y-axis center point of the image");
 DEFINE_int32(screen_width, 800, "The width of the screen");
 
 #define DX (FLAGS_xmax - FLAGS_xmin)
 #define DY (FLAGS_ymax - FLAGS_ymin)
 
-const int THREADS  = 4;
-const int SCR_CD   = 32;
-const int ITERATS  = 15000;
-const int MAX_ITER = 256;   //!< Max iterations for each point of the screen
-const int FRAMES   = 100;   //!< Frames to render before quiting
+const int THREADS  = 4;      //!< Concurrent threads to run
+const int SCR_CD   = 32;     //!< Bits of color
+const int MAX_ITER = 256;    //!< Max iterations for each point of the screen
+const int FRAMES   = 1000;   //!< Frames to render before quiting
 
 int64_t   SCR_WDTH = 0;     //!< Screen Width
 int64_t   SCR_HGHT = 0;     //!< Screen Height

@@ -18,17 +18,17 @@ DEFINE_int32(screen_width, 800, "The width of the screen");
 const int THREADS  = 4;
 const int SCR_CD   = 32;
 const int ITERATS  = 15000;
-const int MAX_ITER = 1024; //!< Maximum number of iter for mandelbrot
-const int FRAMES   = 100;  //!< Frames to render before quiting
+const int MAX_ITER = 256;   //!< Max iterations for each point of the screen
+const int FRAMES   = 100;   //!< Frames to render before quiting
 
-int64_t   SCR_WDTH = 0;    //!< Screen Width
-int64_t   SCR_HGHT = 0;    //!< Screen Height
+int64_t   SCR_WDTH = 0;     //!< Screen Width
+int64_t   SCR_HGHT = 0;     //!< Screen Height
 
 struct pixel{
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    Uint8 alpha;
+    Uint8 r;       //!< Red componet
+    Uint8 g;       //!< Green componet
+    Uint8 b;       //!< Blue componet
+    Uint8 alpha;   //!< Alpha componet
 
     pixel(){
         r     = 0;
@@ -36,7 +36,7 @@ struct pixel{
         b     = 0;
         alpha = 255;
     }
-} colorTable[MAX_ITER];
+}colorTable[MAX_ITER];
 
 struct rendThrData{
     static uint32_t next_id;
@@ -55,7 +55,7 @@ struct rendThrData{
     }
 
     uint64_t& operator()(int64_t x, int64_t y){
-        assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
+        // assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
         return this->img[x * SCR_HGHT + y];
     }
 };
@@ -70,12 +70,13 @@ inline double map(double x, double in_min, double in_max,
         (in_max - in_min) + out_min;
 }
 
+/** Initialize the color table with values for color coding images
+ */
 void generateColorTable(){
-    srand(time(0));
     for(int i = 0; i < MAX_ITER; i++){
-        colorTable[i].r = i % 256;
-        colorTable[i].g = i % 128;
-        colorTable[i].b = i % 64;
+        colorTable[i].r = i;
+        colorTable[i].g = i;
+        colorTable[i].b = i;
     }
 }
 
@@ -88,7 +89,7 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
 
 void* renderThread(void *data){
     rendThrData* d = (rendThrData*)data;
-    double x0, y0, x, y, xtmp;
+    double x0, y0, x, y, xtmp, ytmp;
     int py, px, itr;
     for(py = 0; py < SCR_HGHT; py++){
         for(px = 0; px < SCR_WDTH; px++){
@@ -97,10 +98,15 @@ void* renderThread(void *data){
             x = 0.0;
             y = 0.0;
             itr = 0;
-            while((x*x + y*y < 2*2) and (itr < MAX_ITER)){
+            while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
                 xtmp = x*x - y*y + x0;
-                y = 2*x*y + y0;
+                ytmp = 2*x*y + y0;
+                if((x == xtmp) && (y == ytmp)){
+                    itr = MAX_ITER;
+                    break;
+                }
                 x = xtmp;
+                y = ytmp;
                 itr++;
             }
             (*d)(px, py) = itr;// access img array of thread data via overload
@@ -136,7 +142,7 @@ int main(int argc, char*argv[]){
     pthread_t    thrds[THREADS];
     rendThrData* data;
     SDL_Surface* screen;
-    int i,rc;
+    int i, rc, x, y;
 
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     SCR_WDTH = FLAGS_screen_width;
@@ -159,11 +165,12 @@ int main(int argc, char*argv[]){
         pthread_join(thrds[i % THREADS], NULL); // Join current thread
         SDL_LockSurface(screen);
         // Draw to the screen
-        for(int x = 0; x < SCR_WDTH; x++){
-            for(int y = 0; y < SCR_HGHT; y++){
+        for(x = 0; x < SCR_WDTH; x++){
+            for(y = 0; y < SCR_HGHT; y++){
                 // update pixel on screen for the data gotten from the
                 // thread workload
-                put_px(screen, x, y, &colorTable[data[i%THREADS](x, y)]);
+                put_px(screen, x, y,
+                    &colorTable[data[i%THREADS](x, y)% MAX_ITER]);
             }
         }
         SDL_UnlockSurface(screen);

@@ -138,6 +138,7 @@ int main(int argc, char*argv[]){
     data = new rendThrData[THREADS];
     // initialize threads
     for(i = 0; i < THREADS; i++){
+        setScale(&data[i]);
         rc = pthread_create(&thrds[i], NULL, renderThread, (void*)&data[i]);
         if(rc){
             fprintf(stderr, "Couldn't create thread: %d\n", rc);

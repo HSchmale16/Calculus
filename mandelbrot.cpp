@@ -21,8 +21,10 @@ const int ITERATS  = 15000;
 const int MAX_ITER = 1024; //!< Maximum number of iter for mandelbrot
 const int FRAMES   = 100;  //!< Frames to render before quiting
 
-DEFINE_double(xcenter, MAND_DX / 2.0, "The x-axis point to zoom in on");
-DEFINE_double(ycenter, MAND_DY / 2.0, "The y-axis point to zoom in on");
+DEFINE_double(xmin, -2.5, "The minimum point on the x-axis");
+DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
+DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
+DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
 
 /** Maps a value between 2 limits to some other value between 2 other
  * limits
@@ -58,18 +60,18 @@ void generateColorTable(){
 }
 
 struct rendThrData{
-    static uint8_t next_id;
-    const uint8_t id;
-    double        xmin;
-    double        xmax;
-    double        ymin;
-    double        ymax;
-    uint64_t      img[SCR_WDTH][SCR_HGHT];
+    static uint32_t next_id;
+    const uint32_t  id;
+    double          xmin;
+    double          xmax;
+    double          ymin;
+    double          ymax;
+    uint64_t        img[SCR_WDTH][SCR_HGHT];
 
     rendThrData():id(next_id++){}
     ~rendThrData(){}
 };
-uint8_t rendThrData::next_id = 0;
+uint32_t rendThrData::next_id = 0;
 
 void put_px(SDL_Surface* scr, int x, int y, pixel* p){
     Uint32* p_screen = (Uint32*)scr->pixels;

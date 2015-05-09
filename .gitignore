@@ -2,6 +2,9 @@ mandelbrot
 app
 *.html
 
+# Core dumps from debugging
+core.*
+
 # Don't put images in repo
 *.jpg
 img/*

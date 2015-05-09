@@ -5,26 +5,23 @@
 #include <pthread.h>
 #include <gflags/gflags.h>
 
-#define MAND_DX (MAND_XMAX - MAND_XMIN)
-#define MAND_DY (MAND_YMAX - MAND_YMIN)
+DEFINE_double(xmin, -2.5, "The minimum point on the x-axis");
+DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
+DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
+DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
+DEFINE_int32(screen_width, 800, "The width of the screen");
 
-const double MAND_XMIN = -2.5;
-const double MAND_XMAX = 1.0;
-const double MAND_YMIN = -1.0;
-const double MAND_YMAX = 1.0;
+#define DX (FLAGS_xmax - FLAGS_xmin)
+#define DY (FLAGS_ymax - FLAGS_ymin)
 
 const int THREADS  = 4;
-const int SCR_WDTH = MAND_DX * 300;
-const int SCR_HGHT = MAND_DY * 300;
 const int SCR_CD   = 32;
 const int ITERATS  = 15000;
 const int MAX_ITER = 1024; //!< Maximum number of iter for mandelbrot
 const int FRAMES   = 100;  //!< Frames to render before quiting
 
-DEFINE_double(xmin, -2.5, "The minimum point on the x-axis");
-DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
-DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
-DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
+int32_t   SCR_WDTH = 0;    //!< Screen Width
+int32_t   SCR_HGHT = 0;    //!< Screen Height
 
 struct pixel{
     Uint8 r;
@@ -47,10 +44,18 @@ struct rendThrData{
     double          xmax;
     double          ymin;
     double          ymax;
-    uint64_t        img[SCR_WDTH][SCR_HGHT];
+    uint64_t*       img;
 
-    rendThrData():id(next_id++){}
-    ~rendThrData(){}
+    rendThrData():id(next_id++){
+        img = new uint64_t[SCR_WDTH * SCR_HGHT];
+    }
+    ~rendThrData(){
+        delete[] img;
+    }
+
+    uint64_t& operator()(const uint64_t x, const uint64_t y){
+        return this->img[x * SCR_WDTH + y];
+    }
 };
 uint32_t rendThrData::next_id = 0;
 
@@ -66,9 +71,9 @@ inline double map(double x, double in_min, double in_max,
 void generateColorTable(){
     srand(time(0));
     for(int i = 0; i < MAX_ITER; i++){
-        colorTable[i].r = rand() % 255;
-        colorTable[i].g = rand() % 255;
-        colorTable[i].b = rand() % 255;
+        colorTable[i].r = i % 256;
+        colorTable[i].g = i % 128;
+        colorTable[i].b = i % 64;
     }
 }
 
@@ -96,7 +101,7 @@ void* renderThread(void *data){
                 x = xtmp;
                 itr++;
             }
-            d->img[px][py] = itr;
+            (*d)(px, py) = itr;
         }
     }
     pthread_exit(NULL);
@@ -110,8 +115,8 @@ void setScale(rendThrData* d){
     static double xmax = FLAGS_xmax;
     static double ymin = FLAGS_ymin;
     static double ymax = FLAGS_ymax;
-    double xsca = (dx*.05)/2.0;
-    double ysca = (dy*.05)/2.0;
+    double xsca = (dx*.02)/2.0;
+    double ysca = (dy*.02)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
@@ -132,11 +137,14 @@ int main(int argc, char*argv[]){
     int i,rc;
 
     gflags::ParseCommandLineFlags(&argc, &argv, true);
+    SCR_WDTH = FLAGS_screen_width;
+    SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
+    fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 
     generateColorTable();
     screen = SDL_SetVideoMode(SCR_WDTH, SCR_HGHT, SCR_CD, SDL_SWSURFACE);
-    data = new rendThrData[THREADS];
+    data   = new rendThrData[THREADS];
     // initialize threads
     for(i = 0; i < THREADS; i++){
         setScale(&data[i]);
@@ -151,7 +159,7 @@ int main(int argc, char*argv[]){
         // Draw to the screen
         for(int x = 0; x < SCR_WDTH; x++){
             for(int y = 0; y < SCR_HGHT; y++){
-                put_px(screen, x, y, &colorTable[data[i%THREADS].img[x][y]]);
+                put_px(screen, x, y, &colorTable[data[i%THREADS](x, y)]);
             }
         }
         SDL_UnlockSurface(screen);

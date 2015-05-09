@@ -26,15 +26,6 @@ DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
 DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
 DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
 
-/** Maps a value between 2 limits to some other value between 2 other
- * limits
- */
-inline double map(double x, double in_min, double in_max, 
-        double out_min, double out_max){
-    return (x - in_min) * (out_max - out_min) / 
-        (in_max - in_min) + out_min;
-}
-
 struct pixel{
     Uint8 r;
     Uint8 g;
@@ -47,17 +38,7 @@ struct pixel{
         b     = 0;
         alpha = 255;
     }
-};
-
-pixel colorTable[MAX_ITER];
-void generateColorTable(){
-    srand(time(0));
-    for(int i = 0; i < MAX_ITER; i++){
-        colorTable[i].r = rand() % 255;
-        colorTable[i].g = rand() % 255;
-        colorTable[i].b = rand() % 255;
-    }
-}
+} colorTable[MAX_ITER];
 
 struct rendThrData{
     static uint32_t next_id;
@@ -72,6 +53,24 @@ struct rendThrData{
     ~rendThrData(){}
 };
 uint32_t rendThrData::next_id = 0;
+
+/** Maps a value between 2 limits to some other value between 2 other
+ * limits
+ */
+inline double map(double x, double in_min, double in_max, 
+        double out_min, double out_max){
+    return (x - in_min) * (out_max - out_min) / 
+        (in_max - in_min) + out_min;
+}
+
+void generateColorTable(){
+    srand(time(0));
+    for(int i = 0; i < MAX_ITER; i++){
+        colorTable[i].r = rand() % 255;
+        colorTable[i].g = rand() % 255;
+        colorTable[i].b = rand() % 255;
+    }
+}
 
 void put_px(SDL_Surface* scr, int x, int y, pixel* p){
     Uint32* p_screen = (Uint32*)scr->pixels;

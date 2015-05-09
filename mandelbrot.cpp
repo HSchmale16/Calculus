@@ -106,10 +106,10 @@ void setScale(rendThrData* d){
     // define local macros for calculating delta
     #define dx (xmax-xmin)
     #define dy (ymax-ymin)
-    static double xmin = MAND_XMIN;
-    static double xmax = MAND_XMAX;
-    static double ymin = MAND_YMIN;
-    static double ymax = MAND_YMAX;
+    static double xmin = FLAGS_xmin;
+    static double xmax = FLAGS_xmax;
+    static double ymin = FLAGS_ymin;
+    static double ymax = FLAGS_ymax;
     double xsca = (dx*.05)/2.0;
     double ysca = (dy*.05)/2.0;
     xmin += xsca;

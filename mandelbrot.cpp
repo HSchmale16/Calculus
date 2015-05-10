@@ -15,16 +15,16 @@
 #include <pthread.h>
 #include <gflags/gflags.h>
 
-DEFINE_double(xmin, -2.5, "The minimum point on the x-axis");
-DEFINE_double(xmax,  1.0, "The maximum point on the x-axis");
-DEFINE_double(ymin, -1.0, "The minimum point on the y-axis");
-DEFINE_double(ymax,  1.0, "The maximum point on the y-axis");
+double XMIN = -2.5; 
+double XMAX = 1.0;
+double YMIN = -1.0;
+double YMAX = 1.0;
 DEFINE_double(orgX, -.75, "x-axis center point of the image");
 DEFINE_double(orgY, 0, "y-axis center point of the image");
 DEFINE_int32(screen_width, 800, "The width of the screen");
 
-#define DX (FLAGS_xmax - FLAGS_xmin)
-#define DY (FLAGS_ymax - FLAGS_ymin)
+#define DX (XMAX - XMIN)
+#define DY (YMAX - YMIN)
 
 const int THREADS  = 4;      //!< Concurrent threads to run
 const int SCR_CD   = 32;     //!< Bits of color
@@ -131,10 +131,10 @@ void setScale(rendThrData* d){
     // define local macros for calculating delta
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
-    static double xmin = FLAGS_xmin;
-    static double xmax = FLAGS_xmax;
-    static double ymin = FLAGS_ymin;
-    static double ymax = FLAGS_ymax;
+    static double xmin = XMIN;
+    static double xmax = XMAX;
+    static double ymin = YMIN;
+    static double ymax = YMAX;
     double xsca = (dx*.02)/2.0;
     double ysca = (dy*.02)/2.0;
     xmin += xsca;
@@ -158,15 +158,15 @@ int main(int argc, char*argv[]){
     
     // Handle command line args
     gflags::ParseCommandLineFlags(&argc, &argv, true);
-    assert(FLAGS_xmin < FLAGS_xmax);
-    assert(FLAGS_ymin < FLAGS_ymax);
+    assert(XMIN < XMAX);
+    assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
     SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
     double dx = DX, dy = DY;
-    FLAGS_xmin = FLAGS_orgX - dx / 2.0;
-    FLAGS_xmax = FLAGS_orgX + dx / 2.0;
-    FLAGS_ymin = FLAGS_orgY - dy / 2.0;
-    FLAGS_ymax = FLAGS_orgY + dy / 2.0;
+    XMIN = FLAGS_orgX - dx / 2.0;
+    XMAX = FLAGS_orgX + dx / 2.0;
+    YMIN = FLAGS_orgY - dy / 2.0;
+    YMAX = FLAGS_orgY + dy / 2.0;
     fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 

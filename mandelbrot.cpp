@@ -84,10 +84,10 @@ inline double map(double x, double in_min, double in_max,
 /** Initialize the color table with values for color coding images
 */
 void generateColorTable(){
-    for(int i = 0; i < MAX_ITER; i++){
-        colorTable[i].r = i;
-        colorTable[i].g = i;
-        colorTable[i].b = i;
+    for(int i = 1; i < MAX_ITER; i++){
+        colorTable[i].r = i + 32 % i;
+        colorTable[i].g = i + 64 % i;
+        colorTable[i].b = i + 96;
     }
 }
 

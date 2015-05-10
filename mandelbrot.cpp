@@ -1,3 +1,12 @@
+/**\file   mandelbrot.cpp
+ * \author Henry J Schmale
+ * \date   May 9, 2015
+ *
+ * Draws a mandelbrot fractal on screen using SDL.
+ */
+
+#define NDEEBUG
+
 #include <cstdio>
 #include <cstdint>
 #include <cassert>
@@ -56,7 +65,7 @@ struct rendThrData{
     }
 
     uint64_t& operator()(int64_t x, int64_t y){
-        // assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
+        assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
         return this->img[x * SCR_HGHT + y];
     }
 };
@@ -146,10 +155,18 @@ int main(int argc, char*argv[]){
     rendThrData* data;
     SDL_Surface* screen;
     int i, rc, x, y;
-
+    
+    // Handle command line args
     gflags::ParseCommandLineFlags(&argc, &argv, true);
+    assert(FLAGS_xmin < FLAGS_xmax);
+    assert(FLAGS_ymin < FLAGS_ymax);
     SCR_WDTH = FLAGS_screen_width;
     SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
+    double dx = DX, dy = DY;
+    FLAGS_xmin = FLAGS_orgX - dx / 2.0;
+    FLAGS_xmax = FLAGS_orgX + dx / 2.0;
+    FLAGS_ymin = FLAGS_orgY - dy / 2.0;
+    FLAGS_ymax = FLAGS_orgY + dy / 2.0;
     fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 

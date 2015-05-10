@@ -72,7 +72,7 @@ inline double map(double x, double in_min, double in_max,
 }
 
 /** Initialize the color table with values for color coding images
- */
+*/
 void generateColorTable(){
     for(int i = 0; i < MAX_ITER; i++){
         colorTable[i].r = i;
@@ -88,29 +88,31 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
             p->alpha);
 }
 
+uint64_t mandelbrot(double x0, double y0){
+    int itr = 0;
+    double x = 0.0;
+    double y = 0.0;
+    while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
+        double xtmp = x*x - y*y + x0;
+        double ytmp = 2*x*y + y0;
+        if((x == xtmp) && (y == ytmp)){
+            itr = MAX_ITER;
+            break;
+        }
+        x = xtmp;
+        y = ytmp;
+        itr++;
+    }
+    return itr;
+}
 void* renderThread(void *data){
+    int itr = 0;
     rendThrData* d = (rendThrData*)data;
-    double x0, y0, x, y, xtmp, ytmp;
-    int py, px, itr;
-    for(py = 0; py < SCR_HGHT; py++){
-        for(px = 0; px < SCR_WDTH; px++){
-            x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
-            y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
-            x = 0.0;
-            y = 0.0;
-            itr = 0;
-            while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
-                xtmp = x*x - y*y + x0;
-                ytmp = 2*x*y + y0;
-                if((x == xtmp) && (y == ytmp)){
-                    itr = MAX_ITER;
-                    break;
-                }
-                x = xtmp;
-                y = ytmp;
-                itr++;
-            }
-            (*d)(px, py) = itr;// access img array of thread data via overload
+    for(int py = 0; py < SCR_HGHT; py++){
+        for(int px = 0; px < SCR_WDTH; px++){
+            double x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
+            double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
+            (*d)(px, py) = mandelbrot(x0, y0);
         }
     }
     pthread_exit(NULL);
@@ -118,8 +120,8 @@ void* renderThread(void *data){
 
 void setScale(rendThrData* d){
     // define local macros for calculating delta
-    #define dx (xmax-xmin)
-    #define dy (ymax-ymin)
+#define dx (xmax-xmin)
+#define dy (ymax-ymin)
     static double xmin = FLAGS_xmin;
     static double xmax = FLAGS_xmax;
     static double ymin = FLAGS_ymin;
@@ -135,8 +137,8 @@ void setScale(rendThrData* d){
     d->ymin = ymin;
     d->ymax = ymax;
     // Undefine local macros
-    #undef dx
-    #undef dy
+#undef dx
+#undef dy
 }
 
 int main(int argc, char*argv[]){
@@ -171,7 +173,7 @@ int main(int argc, char*argv[]){
                 // update pixel on screen for the data gotten from the
                 // thread workload
                 put_px(screen, x, y,
-                    &colorTable[data[i%THREADS](x, y)% MAX_ITER]);
+                        &colorTable[data[i%THREADS](x, y)% MAX_ITER]);
             }
         }
         SDL_UnlockSurface(screen);

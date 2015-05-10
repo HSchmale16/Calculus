@@ -20,12 +20,15 @@ double XMIN = -2.5;
 double XMAX = 1.0;
 double YMIN = -1.0;
 double YMAX = 1.0;
+
 DEFINE_double(orgX, -.75, "x-axis center point of the image");
 DEFINE_double(orgY, 0, "y-axis center point of the image");
+DEFINE_double(DX, 3.5, "x-axis diameter of the grid to display");
+DEFINE_double(DY, 2, "y-axis diameter of grid to display");
 DEFINE_int32(screen_width, 800, "The width of the screen");
 
-#define DX 3.5
-#define DY 2
+#define DX FLAGS_DX
+#define DY FLAGS_DY
 
 const int THREADS  = 4;      //!< Concurrent threads to run
 const int SCR_CD   = 32;     //!< Bits of color
@@ -115,6 +118,7 @@ uint64_t mandelbrot(double x0, double y0){
     }
     return itr;
 }
+
 void* renderThread(void *data){
     int itr = 0;
     rendThrData* d = (rendThrData*)data;

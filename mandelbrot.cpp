@@ -29,11 +29,11 @@ DEFINE_int32(screen_width, 800, "The width of the screen");
 
 const int THREADS  = 4;      //!< Concurrent threads to run
 const int SCR_CD   = 32;     //!< Bits of color
-const int MAX_ITER = 256;    //!< Max iterations for each point of the screen
-const int FRAMES   = 1000;   //!< Frames to render before quiting
+const int MAX_ITER = 512;    //!< Max iterations for each point of the screen
+const int FRAMES   = 2000;   //!< Frames to render before quiting
 
-int64_t   SCR_WDTH = 0;     //!< Screen Width
-int64_t   SCR_HGHT = 0;     //!< Screen Height
+int64_t   SCR_WDTH = 0;      //!< Screen Width
+int64_t   SCR_HGHT = 0;      //!< Screen Height
 
 struct pixel{
     Uint8 r;       //!< Red componet

@@ -15,3 +15,6 @@ $(PRES).html: $(PRES)
 clean:
 	rm -f $(EXE)
 	rm -f $(PRES).html
+
+test: $(EXE)
+	./app -orgX=0.001643721971153 -orgY=0.822467633298876

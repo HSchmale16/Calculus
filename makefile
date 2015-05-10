@@ -1,11 +1,13 @@
-EXE  := app
-PRES := pres.md
+EXE      := app
+PRES     := pres.md
+CXX_FLGS := -O2 -std=c++11
+LD_FLGS  := -lpthread -lSDL -lm -lgflags
 
 all: $(EXE) $(PRES).html
 
 $(EXE): mandelbrot.cpp
 	$(info Making $(EXE))
-	g++ -O2 -std=c++11 -lpthread -lSDL -lm -lgflags -o $@ $^
+	g++ $(CXX_FLGS) $(LD_FLGS) -o $@ $^
 	strip -s $@
 
 $(PRES).html: $(PRES)

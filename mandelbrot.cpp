@@ -3,6 +3,7 @@
  * \date   May 9, 2015
  *
  * Draws a mandelbrot fractal on screen using SDL.
+ *
  */
 
 #define NDEEBUG
@@ -23,8 +24,8 @@ DEFINE_double(orgX, -.75, "x-axis center point of the image");
 DEFINE_double(orgY, 0, "y-axis center point of the image");
 DEFINE_int32(screen_width, 800, "The width of the screen");
 
-#define DX (XMAX - XMIN)
-#define DY (YMAX - YMIN)
+#define DX 3.5
+#define DY 2
 
 const int THREADS  = 4;      //!< Concurrent threads to run
 const int SCR_CD   = 32;     //!< Bits of color
@@ -162,11 +163,10 @@ int main(int argc, char*argv[]){
     assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
     SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
-    double dx = DX, dy = DY;
-    XMIN = FLAGS_orgX - dx / 2.0;
-    XMAX = FLAGS_orgX + dx / 2.0;
-    YMIN = FLAGS_orgY - dy / 2.0;
-    YMAX = FLAGS_orgY + dy / 2.0;
+    XMIN = FLAGS_orgX - DX / 2.0;
+    XMAX = FLAGS_orgX + DX / 2.0;
+    YMIN = FLAGS_orgY - DY / 2.0;
+    YMAX = FLAGS_orgY + DY / 2.0;
     fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 

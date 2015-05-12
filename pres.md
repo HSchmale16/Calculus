@@ -8,26 +8,16 @@ approach infinity.
 * That means that $c$ is a member of the mandelbrot set
 
 # Rules for drawing the Mandelbrot Fractal
+* Number of Iterations for the series to converge determines color
+* Some cases may require millions of iterations, so a cut-off point is
+  determined.
 
-~~~~
-For each pixel (Px, Py) on the screen, do:
-{
-    x0 = scaled x coordinate of pixel (scaled to lie in the Mandelbrot X scale (-2.5, 1))
-    y0 = scaled y coordinate of pixel (scaled to lie in the Mandelbrot Y scale (-1, 1))
-    x = 0.0
-    y = 0.0
-    iteration = 0
-    max_iteration = 1000
-    while ( x*x + y*y < 2*2  AND  iteration < max_iteration )
-    {
-        xtemp = x*x - y*y + x0
-        y = 2*x*y + y0
-        x = xtemp
-        iteration = iteration + 1
-    }
-    color = palette[iteration]
-    plot(Px, Py, color)
-}
-~~~~
+# Applications
+* Demo of simple rules creating complex thing
+* Computer Benchmark
+* A test of parallelization
 
+# A demonstration
+A demonstration of my implementation of the mandelbrot
+fractal zoom in.
 

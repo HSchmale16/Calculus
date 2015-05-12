@@ -1,3 +1,9 @@
+<!--
+  The Presentation File
+  This file contains my presentation for calculus project
+  Henry J Schmale
+-->
+
 # The Mandelbrot Fractal and the Application of Amdahl's Law
 <img src="http://upload.wikimedia.org/wikipedia/commons/2/21/Mandel_zoom_00_mandelbrot_set.jpg" width="45%" style="margin:auto"/>
 
@@ -12,7 +18,7 @@ approach infinity.
 * Some cases may require millions of iterations, so a cut-off point is
   determined.
 
-# Applications of the 
+# Applications of the Mandelbrot Fractal
 * Demo of simple rules creating complex thing
 * Computer Benchmark
 * A test of parallelization

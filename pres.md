@@ -8,9 +8,13 @@
 <img src="http://upload.wikimedia.org/wikipedia/commons/2/21/Mandel_zoom_00_mandelbrot_set.jpg" width="45%" style="margin:auto"/>
 
 # What is Amdahl's Law
-<img src="http://latex.codecogs.com/gif.latex?$$T(n)&space;=&space;T(1)(B&space;&plus;\frac{1}{n}(1-B))$$" title="$$T(n) = T(1)(B +\frac{1}{n}(1-B))$$" />
 * Maximum expected improvement to system by parallelization
+* Named after Gene Amdahl
+* $T(n)$ is the time an algorithim takes to complete
+* $n \epsilon N$ number of threads of execution
+* $B \epsilon [0,1]$
 
+$$T(n) = T(1)(B +\frac{1}{n}(1-B))$$
 
 # What is the Mandelbrot set?
 * A set of complex numbers for which a repeating pattern does **NOT**

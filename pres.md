@@ -1,5 +1,5 @@
-# The Mandelbrot Fractal
-<img src="img/Mandel1.jpg" width="45%" style="margin:auto"/>
+# The Mandelbrot Fractal and the Application of Amdahl's Law
+<img src="http://upload.wikimedia.org/wikipedia/commons/2/21/Mandel_zoom_00_mandelbrot_set.jpg" width="45%" style="margin:auto"/>
 
 # What is the Mandelbrot set?
 * A set of complex numbers for which a repeating pattern does **NOT**
@@ -12,12 +12,7 @@ approach infinity.
 * Some cases may require millions of iterations, so a cut-off point is
   determined.
 
-# Applications
+# Applications of the 
 * Demo of simple rules creating complex thing
 * Computer Benchmark
 * A test of parallelization
-
-# A demonstration
-A demonstration of my implementation of the mandelbrot
-fractal zoom in.
-

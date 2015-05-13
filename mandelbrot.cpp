@@ -16,10 +16,10 @@
 #include <pthread.h>
 #include <gflags/gflags.h>
 
-double XMIN = -2.5; 
-double XMAX = 1.0;
-double YMIN = -1.0;
-double YMAX = 1.0;
+long double XMIN = -2.5; 
+long double XMAX = 1.0;
+long double YMIN = -1.0;
+long double YMAX = 1.0;
 
 DEFINE_double(orgX, -.75, "x-axis center point of the image");
 DEFINE_double(orgY, 0, "y-axis center point of the image");
@@ -53,13 +53,13 @@ struct pixel{
 }colorTable[MAX_ITER];
 
 struct rendThrData{
-    static uint32_t next_id;
-    const uint32_t  id;
-    double          xmin;
-    double          xmax;
-    double          ymin;
-    double          ymax;
-    uint64_t*       img;
+    static uint32_t      next_id;
+    const uint32_t       id;
+    long double          xmin;
+    long double          xmax;
+    long double          ymin;
+    long double          ymax;
+    uint64_t*            img;
 
     rendThrData():id(next_id++){
         img = new uint64_t[SCR_WDTH * SCR_HGHT];
@@ -78,8 +78,8 @@ uint32_t rendThrData::next_id = 0;
 /** Maps a value between 2 limits to some other value between 2 other
  * limits
  */
-inline double map(double x, double in_min, double in_max, 
-        double out_min, double out_max){
+inline long double map(long double x, long double in_min, 
+    long double in_max, long double out_min, long double out_max){
     return (x - in_min) * (out_max - out_min) / 
         (in_max - in_min) + out_min;
 }
@@ -101,13 +101,13 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
             p->alpha);
 }
 
-uint64_t mandelbrot(double x0, double y0){
+uint64_t mandelbrot(long double x0, long double y0){
     int itr = 0;
-    double x = 0.0;
-    double y = 0.0;
+    long double x = 0.0;
+    long double y = 0.0;
     while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
-        double xtmp = x*x - y*y + x0;
-        double ytmp = 2*x*y + y0;
+        long double xtmp = x*x - y*y + x0;
+        long double ytmp = 2*x*y + y0;
         if((x == xtmp) && (y == ytmp)){
             itr = MAX_ITER;
             break;
@@ -124,8 +124,8 @@ void* renderThread(void *data){
     rendThrData* d = (rendThrData*)data;
     for(int py = 0; py < SCR_HGHT; py++){
         for(int px = 0; px < SCR_WDTH; px++){
-            double x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
-            double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
+            long double x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
+            long double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
     }
@@ -137,12 +137,12 @@ void setScale(rendThrData* d){
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
     static int    count = 0; // times this function was called also an id
-    static double xmin  = XMIN;
-    static double xmax  = XMAX;
-    static double ymin  = YMIN;
-    static double ymax  = YMAX;
-    double xsca         = (dx*.02)/2.0;
-    double ysca         = (dy*.02)/2.0;
+    static long double xmin  = XMIN;
+    static long double xmax  = XMAX;
+    static long double ymin  = YMIN;
+    static long double ymax  = YMAX;
+    long double xsca         = (dx*.02)/2.0;
+    long double ysca         = (dy*.02)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
@@ -152,7 +152,7 @@ void setScale(rendThrData* d){
     d->xmax = xmax;
     d->ymin = ymin;
     d->ymax = ymax;
-    printf("%d (%e, %e)-(%e, %e)\n", count, xmin, xmax, ymin, ymax);
+    fprintf(stderr, "%d (%e, %e)-(%e, %e)\n", count, xmin, xmax, ymin, ymax);
     // Undefine local macros
 #undef dx
 #undef dy
@@ -169,7 +169,7 @@ int main(int argc, char*argv[]){
     assert(XMIN < XMAX);
     assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
-    SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
+    SCR_HGHT = ((long double)SCR_WDTH / DX) * DY;
     XMIN = FLAGS_orgX - DX / 2.0;
     XMAX = FLAGS_orgX + DX / 2.0;
     YMIN = FLAGS_orgY - DY / 2.0;
@@ -195,7 +195,7 @@ int main(int argc, char*argv[]){
         for(x = 0; x < SCR_WDTH; x++){
             for(y = 0; y < SCR_HGHT; y++){
                 // update pixel on screen for the data gotten from the
-                // thread workload
+                // thread workload that just ran
                 put_px(screen, x, y,
                         &colorTable[data[i%THREADS](x, y)% MAX_ITER]);
             }

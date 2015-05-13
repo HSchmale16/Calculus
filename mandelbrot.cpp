@@ -136,20 +136,23 @@ void setScale(rendThrData* d){
     // define local macros for calculating delta
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
-    static double xmin = XMIN;
-    static double xmax = XMAX;
-    static double ymin = YMIN;
-    static double ymax = YMAX;
-    double xsca = (dx*.02)/2.0;
-    double ysca = (dy*.02)/2.0;
+    static int    count = 0; // times this function was called also an id
+    static double xmin  = XMIN;
+    static double xmax  = XMAX;
+    static double ymin  = YMIN;
+    static double ymax  = YMAX;
+    double xsca         = (dx*.02)/2.0;
+    double ysca         = (dy*.02)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
     ymax -= ysca;
+    count++;
     d->xmin = xmin;
     d->xmax = xmax;
     d->ymin = ymin;
     d->ymax = ymax;
+    printf("%d (%e, %e)-(%e, %e)\n", count, xmin, xmax, ymin, ymax);
     // Undefine local macros
 #undef dx
 #undef dy

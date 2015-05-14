@@ -1,6 +1,7 @@
 mandelbrot
 app
 *.html
+*.o
 
 # Core dumps from debugging
 core.*

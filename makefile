@@ -5,9 +5,9 @@ LD_FLGS  := -lpthread -lSDL -lm -lgflags
 
 all: $(EXE) $(PRES).html
 
-$(EXE): mandelbrot.cpp
+$(EXE): mandelbrot.cpp.o
 	$(info Making $(EXE))
-	g++ $(CXX_FLGS) $(LD_FLGS) -o $@ $^
+	g++ $(LD_FLGS) -o $@ $^
 	strip -s $@
 
 $(PRES).html: $(PRES)
@@ -16,6 +16,7 @@ $(PRES).html: $(PRES)
 
 clean:
 	rm -f $(EXE)
+	rm -rf *.o
 	rm -f $(PRES).html
 
 test: $(EXE)
@@ -23,3 +24,10 @@ test: $(EXE)
 
 example: example.txt $(EXE)
 	./app -flagfile=$<
+
+# =====================================
+# File Build Rules
+# =====================================
+
+%.cpp.o: %.cpp
+	g++ -c $(CXX_FLGS) -o $@ $<

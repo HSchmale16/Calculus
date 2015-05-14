@@ -6,7 +6,7 @@
  *
  */
 
-#define NDEEBUG
+//#define NDEEBUG
 
 #include <cstdio>
 #include <cstdint>
@@ -15,6 +15,9 @@
 #include <SDL/SDL.h>
 #include <pthread.h>
 #include <gflags/gflags.h>
+#include <boost/multiprecision/cpp_dec_float.hpp>
+
+using boost::multiprecision::cpp_dec_float_50;
 
 long double XMIN = -2.5; 
 long double XMAX = 1.0;

@@ -1,7 +1,7 @@
 EXE      := app
 PRES     := pres.md
 CXX_FLGS := -O2 -std=c++11 -march=native -mtune=intel
-LD_FLGS  := -lpthread -lSDL -lm -lgflags
+LD_FLGS  := -lpthread -lSDL -lm -lgflags -lgmp -lmpfr
 
 all: $(EXE) $(PRES).html
 

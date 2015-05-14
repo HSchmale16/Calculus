@@ -15,14 +15,14 @@
 #include <SDL/SDL.h>
 #include <pthread.h>
 #include <gflags/gflags.h>
-#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/multiprecision/mpfr.hpp>
 
-using boost::multiprecision::cpp_dec_float_50;
+using namespace boost::multiprecision;
 
-long double XMIN = -2.5; 
-long double XMAX = 1.0;
-long double YMIN = -1.0;
-long double YMAX = 1.0;
+mpfr_float XMIN = -2.5; 
+mpfr_float XMAX = 1.0;
+mpfr_float YMIN = -1.0;
+mpfr_float YMAX = 1.0;
 
 DEFINE_double(orgX, -.75, "x-axis center point of the image");
 DEFINE_double(orgY, 0, "y-axis center point of the image");
@@ -59,10 +59,10 @@ struct pixel{
 struct rendThrData{
     static uint32_t      next_id;
     const uint32_t       id;
-    long double          xmin;
-    long double          xmax;
-    long double          ymin;
-    long double          ymax;
+    mpfr_float          xmin;
+    mpfr_float          xmax;
+    mpfr_float          ymin;
+    mpfr_float          ymax;
     uint64_t*            img;
 
     rendThrData():id(next_id++){
@@ -82,8 +82,8 @@ uint32_t rendThrData::next_id = 0;
 /** Maps a value between 2 limits to some other value between 2 other
  * limits
  */
-inline long double map(long double x, long double in_min, 
-    long double in_max, long double out_min, long double out_max){
+inline mpfr_float map(mpfr_float x, mpfr_float in_min, 
+    mpfr_float in_max, mpfr_float out_min, mpfr_float out_max){
     return (x - in_min) * (out_max - out_min) / 
         (in_max - in_min) + out_min;
 }
@@ -105,13 +105,13 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
             p->alpha);
 }
 
-uint64_t mandelbrot(long double x0, long double y0){
-    int itr = 0;
-    long double x = 0.0;
-    long double y = 0.0;
+uint64_t mandelbrot(mpfr_float x0, mpfr_float y0){
+    uint64_t   itr = 0;
+    mpfr_float x   = 0.0;
+    mpfr_float y   = 0.0;
     while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
-        long double xtmp = x*x - y*y + x0;
-        long double ytmp = 2*x*y + y0;
+        mpfr_float xtmp = x*x - y*y + x0;
+        mpfr_float ytmp = 2*x*y + y0;
         if((x == xtmp) && (y == ytmp)){
             itr = MAX_ITER;
             break;
@@ -128,10 +128,11 @@ void* renderThread(void *data){
     rendThrData* d = (rendThrData*)data;
     for(int py = 0; py < SCR_HGHT; py++){
         for(int px = 0; px < SCR_WDTH; px++){
-            long double x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
-            long double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
+            mpfr_float x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
+            mpfr_float y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
+        printf("Thread %d - Drew row %d\n", d->id, py);
     }
     pthread_exit(NULL);
 }
@@ -141,13 +142,13 @@ void setScale(rendThrData* d){
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
     static int    count = 0; // times this function was called also an id
-    static long double xmin  = XMIN;
-    static long double xmax  = XMAX;
-    static long double ymin  = YMIN;
-    static long double ymax  = YMAX;
-    static long double zoom  = FLAGS_ZOOM / 2.0;
-    long double xsca         = (dx*zoom)/2.0;
-    long double ysca         = (dy*zoom)/2.0;
+    static mpfr_float xmin  = XMIN;
+    static mpfr_float xmax  = XMAX;
+    static mpfr_float ymin  = YMIN;
+    static mpfr_float ymax  = YMAX;
+    static mpfr_float zoom  = FLAGS_ZOOM / 2.0;
+    mpfr_float xsca         = (dx*zoom)/2.0;
+    mpfr_float ysca         = (dy*zoom)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
@@ -157,7 +158,6 @@ void setScale(rendThrData* d){
     d->xmax = xmax;
     d->ymin = ymin;
     d->ymax = ymax;
-    fprintf(stderr, "%d (%e, %e)-(%e, %e)\n", count, xmin, xmax, ymin, ymax);
     // Undefine local macros
 #undef dx
 #undef dy
@@ -169,12 +169,13 @@ int main(int argc, char*argv[]){
     SDL_Surface* screen;
     int i, rc, x, y;
     
+    mpfr_float::default_precision(1024);
     // Handle command line args
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     assert(XMIN < XMAX);
     assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
-    SCR_HGHT = ((long double)SCR_WDTH / DX) * DY;
+    SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
     XMIN = FLAGS_orgX - DX / 2.0;
     XMAX = FLAGS_orgX + DX / 2.0;
     YMIN = FLAGS_orgY - DY / 2.0;
@@ -205,6 +206,7 @@ int main(int argc, char*argv[]){
                         &colorTable[data[i%THREADS](x, y)% MAX_ITER]);
             }
         }
+        printf("Drew Frame %d\n", i);
         SDL_UnlockSurface(screen);
         if(SDL_Flip(screen) == -1){
             fprintf(stderr, "SDL_Flip Failed");

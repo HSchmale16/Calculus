@@ -21,7 +21,7 @@ clean:
 	rm -f $(PRES).html
 
 test: $(EXE)
-	./app -orgX=0.001643721971153 -orgY=0.822467633298876
+	./app -orgX=0.001643721971153 -orgY=0.822467633298876 -screen_width=200
 
 example: example.txt $(EXE)
 	./app -flagfile=$<

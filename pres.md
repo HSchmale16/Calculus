@@ -33,5 +33,11 @@ approach infinity.
 # Applying Amdahl's Law
 * The drawing of the mandelbrot fractal can easily be parallelized
 * As such amdahl's law applies to it
-1* Writing to disk and displaying to screen is strictly serial.
+* Certain parts are strictly serial operations
+
+# Strictly Serial Operations in drawing the mandelbrot fractal
+* Drawing to the screen
+* Managing Threads
+
+# Operations that can be parallelizatied
 

@@ -12,7 +12,8 @@ $(EXE): mandelbrot.cpp.o
 
 $(PRES).html: $(PRES)
 	$(info Making Presentation)
-	pandoc -s --webtex -i -t SLIDY $< -o $@ --filter pandoc-citeproc
+	pandoc -s --webtex -i -t dzslides $< -o $@ \
+	--filter pandoc-citeproc
 
 clean:
 	rm -f $(EXE)

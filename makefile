@@ -7,7 +7,7 @@ all: $(EXE) $(PRES).html
 
 $(EXE): mandelbrot.cpp.o
 	$(info Making $(EXE))
-	g++ $(LD_FLGS) -o $@ $^
+	g++ $(CXX_FLGS) $(LD_FLGS) -o $@ $^
 	strip -s $@
 
 $(PRES).html: $(PRES)

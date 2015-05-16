@@ -1,6 +1,6 @@
 EXE      := app
 PRES     := pres.md
-CXX_FLGS := -O2 -std=c++11 -march=native -mtune=intel
+CXX_FLGS := -pg -O3 -std=c++11 -march=native -mtune=intel
 LD_FLGS  := -lpthread -lSDL -lm -lgflags -lgmp -lmpfr
 
 all: $(EXE) $(PRES).html
@@ -21,7 +21,7 @@ clean:
 	rm -f $(PRES).html
 
 test: $(EXE)
-	./app -orgX=0.001643721971153 -orgY=0.822467633298876 -screen_width=200
+	./app -orgX=0.001643721971153 -orgY=0.822467633298876
 
 example: example.txt $(EXE)
 	./app -flagfile=$<

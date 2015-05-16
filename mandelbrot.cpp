@@ -24,8 +24,8 @@ mpfr_float XMAX = 1.0;
 mpfr_float YMIN = -1.0;
 mpfr_float YMAX = 1.0;
 
-DEFINE_double(orgX, -.75, "x-axis center point of the image");
-DEFINE_double(orgY, 0, "y-axis center point of the image");
+DEFINE_string(orgX, "-.75", "x-axis center point of the image");
+DEFINE_string(orgY, "0", "y-axis center point of the image");
 DEFINE_double(DX, 3.5, "x-axis diameter of the grid to display");
 DEFINE_double(DY, 2, "y-axis diameter of grid to display");
 DEFINE_double(ZOOM, .05, "Percent to zoom in each iteration");
@@ -132,7 +132,6 @@ void* renderThread(void *data){
             mpfr_float y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
-        printf("Thread %d - Drew row %d\n", d->id, py);
     }
     pthread_exit(NULL);
 }
@@ -169,17 +168,17 @@ int main(int argc, char*argv[]){
     SDL_Surface* screen;
     int i, rc, x, y;
     
-    mpfr_float::default_precision(1024);
+    mpfr_float::default_precision(20);
     // Handle command line args
     gflags::ParseCommandLineFlags(&argc, &argv, true);
     assert(XMIN < XMAX);
     assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
     SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
-    XMIN = FLAGS_orgX - DX / 2.0;
-    XMAX = FLAGS_orgX + DX / 2.0;
-    YMIN = FLAGS_orgY - DY / 2.0;
-    YMAX = FLAGS_orgY + DY / 2.0;
+    XMIN = static_cast<mpfr_float>(FLAGS_orgX) - DX / 2.0;
+    XMAX = static_cast<mpfr_float>(FLAGS_orgX) + DX / 2.0;
+    YMIN = static_cast<mpfr_float>(FLAGS_orgY) - DY / 2.0;
+    YMAX = static_cast<mpfr_float>(FLAGS_orgY) + DY / 2.0;
     fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 

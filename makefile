@@ -23,7 +23,7 @@ clean:
 test: $(EXE)
 	./app -orgX=0.001643721971153 -orgY=0.822467633298876
 
-example: example.txt $(EXE)
+example: ex1.txt $(EXE)
 	./app -flagfile=$<
 
 # =====================================

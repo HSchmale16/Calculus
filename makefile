@@ -3,7 +3,7 @@ PRES     := pres.md
 CXX_FLGS := -O2 -std=gnu++11 -march=native -mtune=intel
 LD_FLGS  := -lpthread -lSDL -lm -lgflags -lquadmath
 
-all: $(EXE) $(PRES).html
+all: $(EXE) $(PRES).html handout.pdf
 
 $(EXE): mandelbrot.cpp.o
 	$(info Making $(EXE))
@@ -15,6 +15,7 @@ $(PRES).html: $(PRES)
 	pandoc -s --webtex -i -t dzslides $< -o $@ \
 	--filter pandoc-citeproc
 
+.PHONY: clean
 clean:
 	rm -f $(EXE)
 	rm -rf *.o
@@ -29,6 +30,8 @@ example: ex1.txt $(EXE)
 # =====================================
 # File Build Rules
 # =====================================
+%.pdf: %.tex
+	pdflatex $<
 
 %.cpp.o: %.cpp
 	g++ -c $(CXX_FLGS) -o $@ $<

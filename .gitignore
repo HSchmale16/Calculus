@@ -9,3 +9,8 @@ core.*
 # Don't put images in repo
 *.jpg
 img/*
+
+# Latex Files
+*.aux
+*.log
+*.pdf

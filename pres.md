@@ -40,4 +40,7 @@ approach infinity.
 * Managing Threads
 
 # Operations that can be parallelizatied
+* Drawing the image
+    * Each frame can be drawn in seperate threads
+
 

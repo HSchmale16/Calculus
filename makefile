@@ -1,13 +1,13 @@
 EXE      := app
 PRES     := pres.md
-CXX_FLGS := -O2 -std=c++11 -march=native -mtune=intel
-LD_FLGS  := -lpthread -lSDL -lm -lgflags
+CXX_FLGS := -O2 -std=gnu++11 -march=native -mtune=intel
+LD_FLGS  := -lpthread -lSDL -lm -lgflags -lquadmath
 
 all: $(EXE) $(PRES).html
 
 $(EXE): mandelbrot.cpp.o
 	$(info Making $(EXE))
-	g++ $(LD_FLGS) -o $@ $^
+	g++ $(CXX_FLGS) $(LD_FLGS) -o $@ $^
 	strip -s $@
 
 $(PRES).html: $(PRES)

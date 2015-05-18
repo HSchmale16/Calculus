@@ -1,6 +1,29 @@
-\documentclass[12pt,twoside,letter]{article}
+\documentclass[10pt,oneside,letter]{article}
 
+\usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
+\usepackage{listings}
+\usepackage{color}
 
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+    language=Java,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=none,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3
+}
 
 \begin{document}
 \title{Applying Ahmdahl's Law to the Mandelbrot Fractal}
@@ -8,6 +31,7 @@
 \date{May 2015}
 \maketitle
 
+% Write the abstract
 \begin{abstract}
 The mandelbrot fractal is an incredibly time consuming calculation.
 The drawing of the mandelbrot fractal can be speed up by multithreading.
@@ -16,5 +40,11 @@ this method. The law governing this performance gain is called Amdahl's
 Law.
 \end{abstract}
 
+\section{The Mandelbrot Set}
+
+\section{Amdahl's Law}
+
+\section{The Source Code}
+\lstinputlisting[language=C++]{mandelbrot.cpp}
 
 \end{document}

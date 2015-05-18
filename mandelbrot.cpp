@@ -3,7 +3,8 @@
  * \date   May 9, 2015
  *
  * Draws a mandelbrot fractal on screen using SDL.
- *
+ * Also requires boost::multiprecision even though it is very slow,
+ * it provides access to quad precision math.
  */
 
 #include <cstdio>

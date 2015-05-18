@@ -20,6 +20,9 @@ clean:
 	rm -f $(EXE)
 	rm -rf *.o
 	rm -f $(PRES).html
+	rm -f *.pdf
+	rm -f *.aux
+	rm -f *.log
 
 test: $(EXE)
 	./app -orgX=0.001643721971153 -orgY=0.822467633298876

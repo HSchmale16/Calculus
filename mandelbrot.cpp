@@ -104,6 +104,12 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
             p->alpha);
 }
 
+/**\brief Calculates the mandelbrot value for a selected point on
+ * the complex plane.
+ * \param x0 The real part of the complex value
+ * \param y0 THe imaginary part of the complex value
+ * \return Number of iterations for convergence.
+ */
 uint64_t mandelbrot(float128 x0, float128 y0){
     uint64_t   itr = 0;
     float128 x   = 0.0;
@@ -122,6 +128,10 @@ uint64_t mandelbrot(float128 x0, float128 y0){
     return itr;
 }
 
+/** This is the "Main" function used for each
+ * thread, and handling the drawing of the new
+ * data for each thread.
+ */
 void* renderThread(void *data){
     int itr = 0;
     rendThrData* d = (rendThrData*)data;
@@ -133,6 +143,7 @@ void* renderThread(void *data){
         }
         fprintf(stderr, "THR=%d :Col=%d\n", d->id, py);
     }
+    // end the thread
     pthread_exit(NULL);
 }
 
@@ -211,14 +222,16 @@ int main(int argc, char*argv[]){
             return 1;
         }
         // Recreate the thread
-        setScale(&data[i%THREADS]); 
+        setScale(&data[i%THREADS]); // update the scale data for that thread
         rc = pthread_create(&thrds[i % THREADS], NULL, renderThread, 
-                (void*)&data[i % THREADS]);
+                (void*)&data[i % THREADS]); // spin up thread
+        // check if it was created successfully.
         if(rc){
             fprintf(stderr, "Couldn't create thread: %d\n", rc);
         }
     }
     for(i = 0; i < THREADS; i++){
+        // Kill the remaining threads, let them rejoin the program.
         pthread_join(thrds[i], NULL);
     }
     delete[] data;

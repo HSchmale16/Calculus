@@ -1,5 +1,6 @@
 \documentclass[10pt,oneside,letter]{article}
 
+\usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
 \usepackage{listings}
@@ -16,7 +17,8 @@
     showstringspaces=false,
     columns=flexible,
     basicstyle={\small\ttfamily},
-    numbers=none,
+    numbers=left,
+    numbersep=5pt,
     numberstyle=\tiny\color{gray},
     keywordstyle=\color{blue},
     commentstyle=\color{dkgreen},
@@ -55,6 +57,31 @@ amount of time needed for the serial fraction of the program. That is the
 section that must be executed in a single thread of execution, or the part
 that cannot be parallelized.
 
+\subsection{Equations}
+Given:
+\begin{itemize}
+  \item $n \epsilon N$ The number of threads of execution.
+  \item $B \epsilon [0,1]$ The fraction of the algorithim that is
+      strictly serial.
+\end{itemize}
+
+$T(n)$ describes how long an algorithim will take to complete when running
+with $n$ threads of execution, see equation \eqref{eq:amdahl_time}.
+\begin{equation} \label{eq:amdahl_time}
+    T(n) = T(1)(B + \frac{1}{n}(1-B))
+\end{equation}
+
+Therefore, the theoretical speedup $S(n)$ that can be had on a given algorithim
+on a system capable of executing $n$ threads of execution is seen in equation
+\eqref{eq:amdahl_speedup}
+\begin{equation} \label{eq:amdahl_speedup}
+    S(n) = \frac{T(1)}{T(n)} = 
+        \frac{T(1)}{T(1)(B+\frac{1}{n}(1-B))} =
+        \frac{1}{B+\frac{1}{n}(1-B)}
+\end{equation}
+
+
+% Begin the next section that ties everything togather
 \section{Tying Amdahl's Law and the Mandelbrot Fractal Togather}
 
 % Distribute the source code in the handout

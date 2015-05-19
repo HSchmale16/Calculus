@@ -86,7 +86,9 @@ The program I wrote to calculate the mandelbrot fractal uses a nested loop to
 draw to the screen, and that has a time complexity of at least $O(n^2)$. That
 part is strictly serial. Since the drawing to the screen routine is strictly
 serial, amdahl's law applies. Now the worst case time complexity of calculating a
-point in the mandelbrot fractal using the escape time algorithim $O({colors})$.
+point in the mandelbrot fractal using the escape time algorithim $O({colors} + 1)$,
+and the best case senario is $O(1)$. This leads to a worst case senario for the
+whole program as $O(n^2 + n)$.
 
 % Distribute the source code in the handout
 \section{The Source Code}

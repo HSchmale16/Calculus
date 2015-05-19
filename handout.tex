@@ -75,14 +75,17 @@ Therefore, the theoretical speedup $S(n)$ that can be had on a given algorithim
 on a system capable of executing $n$ threads of execution is seen in equation
 \eqref{eq:amdahl_speedup}
 \begin{equation} \label{eq:amdahl_speedup}
-    S(n) = \frac{T(1)}{T(n)} = 
-        \frac{T(1)}{T(1)(B+\frac{1}{n}(1-B))} =
-        \frac{1}{B+\frac{1}{n}(1-B)}
+    S(n) = \frac{T(1)}{T(n)}
+         = \frac{T(1)}{T(1)(B+\frac{1}{n}(1-B))}
+         = \frac{1}{B+\frac{1}{n}(1-B)}
 \end{equation}
-
 
 % Begin the next section that ties everything togather
 \section{Tying Amdahl's Law and the Mandelbrot Fractal Togather}
+The program I wrote to calculate the mandelbrot fractal uses a nested loop to
+draw to the screen, and that has a time complexity of at least $O(n^2)$. That
+part is strictly serial. Since the drawing to the screen routine is strictly
+serial, amdahl's law applies.
 
 % Distribute the source code in the handout
 \section{The Source Code}

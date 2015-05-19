@@ -23,6 +23,7 @@ clean:
 	rm -f *.pdf
 	rm -f *.aux
 	rm -f *.log
+	rm -f *.out
 
 test: $(EXE)
 	./app -orgX=0.001643721971153 -orgY=0.822467633298876

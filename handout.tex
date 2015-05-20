@@ -90,6 +90,26 @@ point in the mandelbrot fractal using the escape time algorithim $O({colors} + 1
 and the best case senario is $O(1)$. This leads to a worst case senario for the
 whole program as $O(n^5)$.
 
+Now plugging the numbers into amdahl's equations yeilds the following speed up
+when running on 5 threads (4 worker threads and 1 main thread). THe speed up
+yielded by multithreading can be seen in equation \eqref{eq::speedup5threads}.
+
+Given:
+\begin{itemize}
+    \item $T(1) = n^3$ The single threaded time complexity is $O(n^3)$
+    \item $B = 2/5 = .4$ Roughly $2/5$ of the algorithim is serial
+    \item The equations and givens in section~\pageref{sec:Ahmdahl's Law} still apply.
+\end{itemize}
+
+\begin{equation} \label{eq:speedup5threads}
+    \begin{align*}
+        T(n) = T(1)(B + \frac{1}{n}(1-B))\\
+        T(5) = (n^3)(.4 + \frac{1}{5}(1-.4))\\
+        T(5) = .52(n^3)\\
+        S(5) = \frac{T(1)}{T(5)} = \frac{n^3}{.52n^3} = 1.923
+    \end{align*}
+\end{equation}
+
 % Distribute the source code in the handout
 \section{The Source Code}
 This section consists entirely of the source code to my multithreaded

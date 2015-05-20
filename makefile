@@ -35,7 +35,7 @@ example: ex1.txt $(EXE)
 # File Build Rules
 # =====================================
 %.pdf: %.tex
-	pdflatex $<
+	pdflatex -shell-escape $<
 
 %.cpp.o: %.cpp
 	g++ -c $(CXX_FLGS) -o $@ $<

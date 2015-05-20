@@ -1,7 +1,7 @@
 \documentclass[10pt,oneside,letter]{article}
 
 \usepackage{tikz}
-\usepackage{tikz-fct}
+\usepackage{pgfplots}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
@@ -46,9 +46,6 @@ Law.
 \end{abstract}
 
 \section{The Mandelbrot Set}
-The mandelbrot set is the set of complex numbers $c$ for which the sequence
-$(c, c^2 + c, (c^2+c)^2 + c, ((c^2+c)^2+c)^2 + c, (((c^2+c)^2+c)^2+c)^2 + c, ...)$
-remains bounded or rather does not approach infinity.
 
 \section{Amdahl's Law}
 Ahmdahl's Law is used to find the maximum expected improvement to an overall
@@ -66,8 +63,7 @@ that cannot be parallelized.
 Given:
 \begin{itemize}
   \item $n \epsilon N$ The number of threads of execution.
-  \item $B \epsilon [0,1]$ The fraction of the algorithim that is
-      strictly serial.
+  \item $B \epsilon [0,1]$ The fraction of the algorithim that is strictly serial.
 \end{itemize}
 
 $T(n)$ describes how long an algorithim will take to complete when running
@@ -108,30 +104,31 @@ Given:
 \end{itemize}
 
 \begin{equation} \label{eq:speedup5threads}
-    \begin{align*}
-        T(n) = T(1)(B + \frac{1}{n}(1-B))\\
-        T(5) = (n^3)(.4 + \frac{1}{5}(1-.4))\\
-        T(5) = .52(n^3)\\
-        S(5) = \frac{T(1)}{T(5)} = \frac{n^3}{.52n^3} = 1.923
-    \end{align*}
+    T(n) = T(1)(B + \frac{1}{n}(1-B))\\
+    T(5) = (n^3)(.4 + \frac{1}{5}(1-.4))\\
+    T(5) = .52(n^3)\\
+    S(5) = \frac{T(1)}{T(5)} = \frac{n^3}{.52n^3} = 1.923
 \end{equation}
 
-Additionally, there is scalling involved in this, as seen in the graphs below.
+Additionally, there is scaling involved in this. As shown in the graph
+below, as a relation between the number of threads and the time taken.
 
 \begin{tikzpicture}
     \begin{axis}[
-        xlabel=$number of tasks$,
+        xlabel=${Value of x}$,
         ylabel=$T(x)$
     ]
-        \addplot gnuplot[id=t1]{x**3}
-        \addplot gnuplot[id=t2]{x**3(.4 + (1/2)(.6))}
+        \addplot gnuplot[id=t1]{x**3};
+        \addplot gnuplot[id=t2]{x**3(.4 + (1/2)(.6))};
+    \end{axis}
 \end{tikzpicture}
 
 % Distribute the source code in the handout
 \section{The Source Code}
 This section consists entirely of the source code to my multithreaded
-mandelbrot fractal program written in C++. The entire contents of this project
-is available at \url{<https://github.com/HSchmale16/CalculusProject>}.
+mandelbrot fractal program written in C++. The entire contents of this
+project is available at 
+\url{<https://github.com/HSchmale16/CalculusProject>}.
 \lstinputlisting[language=C++]{mandelbrot.cpp}
 
 \end{document}

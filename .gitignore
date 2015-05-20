@@ -15,3 +15,5 @@ img/*
 *.log
 *.pdf
 *.out
+*.table
+*.gnuplot

@@ -138,7 +138,7 @@ void* renderThread(void *data){
             long double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
-        fprintf(stderr, "THR=%d :Col=%d\n", d->id, py);
+        //fprintf(stderr, "THR=%d :Col=%d\n", d->id, py);
     }
     // end the thread
     pthread_exit(NULL);

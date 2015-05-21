@@ -1,7 +1,7 @@
 EXE      := app
 PRES     := pres.md
 CXX_FLGS := -O2 -std=gnu++11 -march=native -mtune=intel
-LD_FLGS  := -lpthread -lSDL -lm -lgflags -lquadmath
+LD_FLGS  := -lpthread -lSDL -lm -lgflags
 
 all: $(EXE) $(PRES).html handout.pdf
 

@@ -14,17 +14,14 @@
 #include <SDL/SDL.h>
 #include <pthread.h>
 #include <gflags/gflags.h>
-#include <boost/multiprecision/float128.hpp>
 
-using namespace boost::multiprecision;
+long double XMIN = -2.5; 
+long double XMAX = 1.0;
+long double YMIN = -1.0;
+long double YMAX = 1.0;
 
-float128 XMIN = -2.5; 
-float128 XMAX = 1.0;
-float128 YMIN = -1.0;
-float128 YMAX = 1.0;
-
-DEFINE_string(orgX, "-.75", "x-axis center point of the image");
-DEFINE_string(orgY, "0", "y-axis center point of the image");
+DEFINE_double(orgX, -.75, "x-axis center point of the image");
+DEFINE_double(orgY, 0, "y-axis center point of the image");
 DEFINE_double(DX, 3.5, "x-axis diameter of the grid to display");
 DEFINE_double(DY, 2, "y-axis diameter of grid to display");
 DEFINE_double(ZOOM, .05, "Percent to zoom in each iteration");
@@ -58,10 +55,10 @@ struct pixel{
 struct rendThrData{
     static uint32_t   next_id;
     const uint32_t    id;
-    float128          xmin;
-    float128          xmax;
-    float128          ymin;
-    float128          ymax;
+    long double          xmin;
+    long double          xmax;
+    long double          ymin;
+    long double          ymax;
     uint64_t*         img;
 
     rendThrData():id(next_id++){
@@ -81,8 +78,8 @@ uint32_t rendThrData::next_id = 0;
 /** Maps a value between 2 limits to some other value between 2 other
  * limits
  */
-inline float128 map(float128 x, float128 in_min, 
-    float128 in_max, float128 out_min, float128 out_max){
+inline long double map(long double x, long double in_min, 
+    long double in_max, long double out_min, long double out_max){
     return (x - in_min) * (out_max - out_min) / 
         (in_max - in_min) + out_min;
 }
@@ -110,13 +107,13 @@ void put_px(SDL_Surface* scr, int x, int y, pixel* p){
  * \param y0 THe imaginary part of the complex value
  * \return Number of iterations for convergence.
  */
-uint64_t mandelbrot(float128 x0, float128 y0){
+uint64_t mandelbrot(long double x0, long double y0){
     uint64_t   itr = 0;
-    float128 x   = 0.0;
-    float128 y   = 0.0;
+    long double x   = 0.0;
+    long double y   = 0.0;
     while((x*x + y*y < 4.0) && (itr < MAX_ITER)){
-        float128 xtmp = x*x - y*y + x0;
-        float128 ytmp = 2*x*y + y0;
+        long double xtmp = x*x - y*y + x0;
+        long double ytmp = 2*x*y + y0;
         if((x == xtmp) && (y == ytmp)){
             itr = MAX_ITER;
             break;
@@ -137,8 +134,8 @@ void* renderThread(void *data){
     rendThrData* d = (rendThrData*)data;
     for(int py = 0; py < SCR_HGHT; py++){
         for(int px = 0; px < SCR_WDTH; px++){
-            float128 x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
-            float128 y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
+            long double x0 = map(px, 0, SCR_WDTH, d->xmin, d->xmax);
+            long double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
         fprintf(stderr, "THR=%d :Col=%d\n", d->id, py);
@@ -152,13 +149,13 @@ void setScale(rendThrData* d){
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
     static int    count = 0; // times this function was called also an id
-    static float128 xmin  = XMIN;
-    static float128 xmax  = XMAX;
-    static float128 ymin  = YMIN;
-    static float128 ymax  = YMAX;
-    static float128 zoom  = FLAGS_ZOOM / 2.0;
-    float128        xsca  = (dx*zoom)/2.0;
-    float128        ysca  = (dy*zoom)/2.0;
+    static long double xmin  = XMIN;
+    static long double xmax  = XMAX;
+    static long double ymin  = YMIN;
+    static long double ymax  = YMAX;
+    static long double zoom  = FLAGS_ZOOM / 2.0;
+    long double        xsca  = (dx*zoom)/2.0;
+    long double        ysca  = (dy*zoom)/2.0;
     xmin += xsca;
     xmax -= xsca;
     ymin += ysca;
@@ -185,10 +182,10 @@ int main(int argc, char*argv[]){
     assert(YMIN < YMAX);
     SCR_WDTH = FLAGS_screen_width;
     SCR_HGHT = ((double)SCR_WDTH / DX) * DY;
-    XMIN = static_cast<float128>(FLAGS_orgX) - DX / 2.0;
-    XMAX = static_cast<float128>(FLAGS_orgX) + DX / 2.0;
-    YMIN = static_cast<float128>(FLAGS_orgY) - DY / 2.0;
-    YMAX = static_cast<float128>(FLAGS_orgY) + DY / 2.0;
+    XMIN = static_cast<long double>(FLAGS_orgX) - DX / 2.0;
+    XMAX = static_cast<long double>(FLAGS_orgX) + DX / 2.0;
+    YMIN = static_cast<long double>(FLAGS_orgY) - DY / 2.0;
+    YMAX = static_cast<long double>(FLAGS_orgY) + DY / 2.0;
     fprintf(stderr, "WND SZ = %d by %d\n", SCR_WDTH, SCR_HGHT);
 
     SDL_Init(SDL_INIT_EVERYTHING); 

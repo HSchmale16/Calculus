@@ -1,7 +1,5 @@
 \documentclass[10pt,oneside,letter]{article}
 
-\usepackage{tikz}
-\usepackage{pgfplots}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage[top=1in,bottom=1in,left=1in,right=1in]{geometry}
@@ -104,24 +102,13 @@ Given:
 \end{itemize}
 
 \begin{equation} \label{eq:speedup5threads}
-    T(n) = T(1)(B + \frac{1}{n}(1-B))\\
-    T(5) = (n^3)(.4 + \frac{1}{5}(1-.4))\\
-    T(5) = .52(n^3)\\
-    S(5) = \frac{T(1)}{T(5)} = \frac{n^3}{.52n^3} = 1.923
+    \begin{align}
+        T(n)&= T(1)(B + \frac{1}{n}(1-B))\\
+        T(5)&= (n^3)(.4 + \frac{1}{5}(1-.4))\\
+        T(5)&= .52(n^3)\\
+        S(5)&= \frac{T(1)}{T(5)} = \frac{n^3}{.52n^3} = 1.923
+    \end{align}
 \end{equation}
-
-Additionally, there is scaling involved in this. As shown in the graph
-below, as a relation between the number of threads and the time taken.
-
-\begin{tikzpicture}
-    \begin{axis}[
-        xlabel=${Value of x}$,
-        ylabel=$T(x)$
-    ]
-        \addplot gnuplot[id=t1]{x**3};
-        \addplot gnuplot[id=t2]{x**3(.4 + (1/2)(.6))};
-    \end{axis}
-\end{tikzpicture}
 
 % Distribute the source code in the handout
 \section{The Source Code}

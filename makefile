@@ -34,7 +34,7 @@ example: ex1.txt $(EXE)
 # =====================================
 # File Build Rules
 # =====================================
-%.pdf: %.tex
+%.pdf: %.tex mandelbrot.cpp
 	pdflatex -shell-escape $<
 
 %.cpp.o: %.cpp

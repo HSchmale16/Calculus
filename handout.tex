@@ -1,4 +1,4 @@
-\documentclass[10pt,oneside,letterpaper]{article}
+\documentclass[11pt,oneside,letterpaper]{article}
 
 \usepackage{amsmath}
 \usepackage{hyperref}
@@ -53,6 +53,12 @@ The formal definition is shown in \eqref{eq:mandeldef}.
     P_{c}: z \mapsto z^2 + c    
 \end{equation}
 
+Where in \eqref{eq:mandeldef}, $c$ is a complex parameter and the point
+in the grid currently being graphed. For each $c$, the behavior of the
+sequence $(0, P_{c}(0), P_{c}(P_{c}(0)),...)$ is considered to determine
+whether $P_{c}(z)$ escapes to infinity or remains bounded. The Mandelbrot
+set is the set of all points $c$ that the sequence does not escape to
+infinity.
 
 \subsection{Drawing the Fractal}
 The Mandelbrot fractal can be drawn using several methods. The
@@ -60,7 +66,11 @@ program being demonstrated today uses the escape time algorithm.
 This method just brute forces every single point to determine what color
 that pixel will be. This method is the simplest method to implement, but
 it is also one of the slowest methods, because it is a brute force method.
+However, it can be speed up with a periodicity check which is used in the
+program being demonstrated.
 
+
+% Next section on Amdahl's Law
 \section{Amdahl's Law}
 Amdahl's Law is used to find the maximum expected improvement to an overall
 system when only one part of the system is improved. This law is most often

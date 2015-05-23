@@ -84,7 +84,8 @@ inline long double map(long double x, long double in_min,
         (in_max - in_min) + out_min;
 }
 
-/** Initialize the color table with values for color coding images
+/**Initialize the color table with values for color coding images.
+ * Makes abuse of overflow.
 */
 void generateColorTable(){
     for(int i = 1; i < MAX_ITER; i++){
@@ -138,9 +139,7 @@ void* renderThread(void *data){
             long double y0 = map(py, 0, SCR_HGHT, d->ymin, d->ymax);
             (*d)(px, py) = mandelbrot(x0, y0);
         }
-        //fprintf(stderr, "THR=%d :Col=%d\n", d->id, py);
     }
-    // end the thread
     pthread_exit(NULL);
 }
 
@@ -203,7 +202,7 @@ int main(int argc, char*argv[]){
     for(i = 0; i < FRAMES; i++){
         pthread_join(thrds[i % THREADS], NULL); // Join current thread
         SDL_LockSurface(screen);
-        // Draw to the screen
+        // Draw to the screen, a hack because SDL_Blit does not work right
         for(x = 0; x < SCR_WDTH; x++){
             for(y = 0; y < SCR_HGHT; y++){
                 // update pixel on screen for the data gotten from the

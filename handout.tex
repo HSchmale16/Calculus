@@ -29,38 +29,40 @@
 }
 
 \begin{document}
-\title{Applying Ahmdahl's Law to the Mandelbrot Fractal}
+\title{Applying Amdahl's Law to the Mandelbrot Fractal}
 \author{Henry J Schmale}
 \date{May 2015}
 \maketitle
 
 % Write the abstract
 \begin{abstract}
-The mandelbrot fractal is an incredibly time consuming calculation.
-The drawing of the mandelbrot fractal can be speed up by multithreading.
-However, there is a finate amount of performance that can be gained by
+The Mandelbrot fractal is an incredibly time consuming calculation.
+The drawing of the Mandelbrot fractal can be speed up by multithreading.
+However, there is a finite amount of performance that can be gained by
 this method. The law governing this performance gain is called Amdahl's
 Law.
 \end{abstract}
 
 \section{The Mandelbrot Set}
-The mandelbrot set is a set of numbers in the complex plane for which
+The Mandelbrot set is a set of numbers in the complex plane for which
 a function remains bounded. The coloring of the fractal is determined
 by the number of iterations it took to determine that it converges.
+The formal definition is shown in \eqref{eq:mandeldef}.
 
 \begin{equation}\label{eq:mandeldef}
     P_{c}: z \mapsto z^2 + c    
 \end{equation}
 
+
 \subsection{Drawing the Fractal}
-The mandelbrot fractal can be drawn using several methods. The
-program being demonstracted today uses the escape time algorithim.
-This method just bruteforces every single point to determine what color
-that pixel will be. This method is the simpliest method to implement, but
-it is also one of the slowest methods, becuase it is a brute force method.
+The Mandelbrot fractal can be drawn using several methods. The
+program being demonstrated today uses the escape time algorithm.
+This method just brute forces every single point to determine what color
+that pixel will be. This method is the simplest method to implement, but
+it is also one of the slowest methods, because it is a brute force method.
 
 \section{Amdahl's Law}
-Ahmdahl's Law is used to find the maximum expected improvement to an overall
+Amdahl's Law is used to find the maximum expected improvement to an overall
 system when only one part of the system is improved. This law is most often
 used in parallel computing to predict the theoretical maximum speedup when
 using many processors to operate on a workload in parallel. This law is named
@@ -76,17 +78,17 @@ that cannot be parallelized.
 Given:
 \begin{itemize}
   \item $n \epsilon N$ The number of threads of execution.
-  \item $B \epsilon [0,1]$ The fraction of the algorithim that is strictly serial.
+  \item $B \epsilon [0,1]$ The fraction of the algorithm that is strictly serial.
 \end{itemize}
 
-$T(n)$ describes how long an algorithim will take to complete when running
+$T(n)$ describes how long an algorithm will take to complete when running
 with $n$ threads of execution, see equation \eqref{eq:amdahl_time}.
 
 \begin{equation} \label{eq:amdahl_time}
     T(n) = T(1)(B + \frac{1}{n}(1-B))
 \end{equation}
 
-Therefore, the theoretical speedup $S(n)$ that can be had on a given algorithim
+Therefore, the theoretical speedup $S(n)$ that can be had on a given algorithm
 on a system capable of executing $n$ threads of execution is seen in equation
 \eqref{eq:amdahl_speedup}
 \begin{equation} \label{eq:amdahl_speedup}
@@ -95,17 +97,17 @@ on a system capable of executing $n$ threads of execution is seen in equation
          = \frac{1}{B+\frac{1}{n}(1-B)}
 \end{equation}
 
-% Begin the next section that ties everything togather
-\section{Tying Amdahl's Law and the Mandelbrot Fractal Togather}
-The program I wrote to calculate the mandelbrot fractal uses a nested loop to
+% Begin the next section that ties everything together
+\section{Tying Amdahl's Law and the Mandelbrot Fractal Together}
+The program I wrote to calculate the Mandelbrot fractal uses a nested loop to
 draw to the screen, and that has a time complexity of at least $O(n^2)$. That
 part is strictly serial. Since the drawing to the screen routine is strictly
-serial, amdahl's law applies. Now the worst case time complexity of calculating a
-point in the mandelbrot fractal using the escape time algorithim $O({colors} + 1)$,
-and the best case senario is $O(1)$. This leads to a worst case senario for the
-whole program as $O(n^5)$.
+serial, Amdahl's law applies. Now the worst case time complexity of calculating a
+point in the Mandelbrot fractal using the escape time algorithm 
+$O({colors} + 1)$, and the best case scenario is $O(1)$. This leads to a worst
+case scenario for the whole program as $O(n^5)$.
 
-Now plugging the numbers into amdahl's equations yeilds the following speed up
+Now plugging the numbers into Amdahl's equations yields the following speed up
 when running on 5 threads (4 worker threads and 1 main thread). The speed up
 yielded by multithreading can be seen in equation \eqref{eq:speedup5threads},
 the final expected speed up running on 5 threads is 1.92 times faster than running
@@ -113,7 +115,7 @@ it in a single thread.
 Given:
 \begin{itemize}
     \item $T(1) = n^3$ The single threaded time complexity is $O(n^3)$
-    \item $B = 2/5 = .4$ Roughly $2/5$ of the algorithim is serial
+    \item $B = 2/5 = .4$ Roughly $2/5$ of the algorithm is serial
     \item The equations and givens in section \ref{sec:Amdahl-Equations}
         still apply.
 \end{itemize}
@@ -130,8 +132,8 @@ Given:
 % Distribute the source code in the handout
 \section{The Source Code}
 This section consists entirely of the source code to my multithreaded
-mandelbrot fractal program written in C++. However due to the use of
-pthreads, it will only run under a unix-like operating system. The 
+Mandelbrot fractal program written in C++. However due to the use of
+pthreads, it will only run under a Unix-like operating system. The 
 entire contents of this project is available at 
 \url{<https://github.com/HSchmale16/CalculusProject>}.
 \lstinputlisting[language=C++]{mandelbrot.cpp}

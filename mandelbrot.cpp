@@ -147,7 +147,7 @@ void setScale(rendThrData* d){
     // define local macros for calculating delta
 #define dx (xmax-xmin)
 #define dy (ymax-ymin)
-    static int    count = 0; // times this function was called also an id
+    static uint64_t    count = 0; // times this function was called also an id
     static long double xmin  = XMIN;
     static long double xmax  = XMAX;
     static long double ymin  = YMIN;

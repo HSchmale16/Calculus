@@ -10,15 +10,15 @@ $$T(n) = T(1)(B +\frac{1}{n}(1-B))$$
 
 * Maximum expected improvement to system by parallelization
 * Named after Gene Amdahl
-* $T(n)$ is the time an algorithim takes to complete
+* $T(n)$ is the time an algorithm takes to complete
 * $n \epsilon N$ number of threads of execution
-* $B \epsilon [0,1]$ Percent of algorithim that is serial
+* $B \epsilon [0,1]$ Percent of algorithm that is serial
 
 # What is the Mandelbrot set?
 * A set of complex numbers for which a repeating pattern does **NOT**
 approach infinity.
 * Described by where $z_{n+1} = z_{n}^2+c$ remains bounded
-* That means that $c$ is a member of the mandelbrot set
+* That means that $c$ is a member of the Mandelbrot set
 
 # Rules for drawing the Mandelbrot Fractal
 * Number of Iterations for the series to converge determines color
@@ -31,16 +31,18 @@ approach infinity.
 * A test of parallelization
 
 # Applying Amdahl's Law
-* The drawing of the mandelbrot fractal can easily be parallelized
-* As such amdahl's law applies to it
+* The drawing of the Mandelbrot fractal can easily be parallelized
+* As such Amdahl's law applies to it
 * Certain parts are strictly serial operations
 
-# Strictly Serial Operations in drawing the mandelbrot fractal
+# Strictly Serial Operations in drawing the Mandelbrot fractal
 * Drawing to the screen
 * Managing Threads
+* Writing to disk
 
-# Operations that can be parallelizatied
+# Operations that can be parallelized
 * Drawing the image
-    * Each frame can be drawn in seperate threads
-
+    * Each frame can be drawn in separate threads
+    * Each row/col could also been drawn in own thread
+* Calculating the Mandelbrot value for each pixel
 

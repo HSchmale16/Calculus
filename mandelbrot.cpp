@@ -7,13 +7,13 @@
  * it provides access to quad precision math.
  */
 
-#include <cstdio>
-#include <cstdint>
-#include <cassert>
-#include <cstdlib>
-#include <SDL/SDL.h>
-#include <pthread.h>
-#include <gflags/gflags.h>
+#include <cstdio>            //!< For writing out to console
+#include <cstdint>           //!< Fixed width integers
+#include <cassert>           //!< Error Checking
+#include <cstdlib>           //!< Standard Library
+#include <SDL/SDL.h>         //!< Visible window to view the zoom
+#include <pthread.h>         //!< Multithreading library
+#include <gflags/gflags.h>   //!< Parsing the commandline flags
 
 long double XMIN = -2.5; 
 long double XMAX = 1.0;
@@ -39,10 +39,10 @@ int64_t   SCR_WDTH = 0;      //!< Screen Width
 int64_t   SCR_HGHT = 0;      //!< Screen Height
 
 struct pixel{
-    Uint8 r;       //!< Red componet
-    Uint8 g;       //!< Green componet
-    Uint8 b;       //!< Blue componet
-    Uint8 alpha;   //!< Alpha componet
+    Uint8 r;                 //!< Red componet
+    Uint8 g;                 //!< Green componet
+    Uint8 b;                 //!< Blue componet
+    Uint8 alpha;             //!< Alpha componet
 
     pixel(){
         r     = 0;
@@ -53,13 +53,13 @@ struct pixel{
 }colorTable[MAX_ITER];
 
 struct rendThrData{
-    static uint32_t   next_id;
-    const uint32_t    id;
-    long double          xmin;
-    long double          xmax;
-    long double          ymin;
-    long double          ymax;
-    uint64_t*         img;
+    static uint32_t   next_id; //!< Next thread id
+    const uint32_t    id;      //!< That specific thread id
+    long double       xmin;    //!< xmin for coord plane
+    long double       xmax;
+    long double       ymin;
+    long double       ymax;
+    uint64_t*         img;     //!< The image array
 
     rendThrData():id(next_id++){
         img = new uint64_t[SCR_WDTH * SCR_HGHT];
@@ -67,7 +67,7 @@ struct rendThrData{
     ~rendThrData(){
         delete[] img;
     }
-
+    //!< Array write and access operator
     uint64_t& operator()(int64_t x, int64_t y){
         assert((x*SCR_HGHT + y) < (SCR_WDTH*SCR_HGHT));
         return this->img[x * SCR_HGHT + y];

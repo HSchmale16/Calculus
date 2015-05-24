@@ -16,7 +16,7 @@ $$T(n) = T(1)(B +\frac{1}{n}(1-B))$$
 
 # What is the Mandelbrot set?
 * A set of complex numbers for which a repeating pattern does **NOT**
-approach infinity.
+  approach infinity.
 * Described by where $z_{n+1} = z_{n}^2+c$ remains bounded
 * That means that $c$ is a member of the Mandelbrot set
 
@@ -45,4 +45,9 @@ approach infinity.
     * Each frame can be drawn in separate threads
     * Each row/col could also been drawn in own thread
 * Calculating the Mandelbrot value for each pixel
+
+# The program demonstration
+
+# Going through the program
+I will now walk you through the program
 
